@@ -1,0 +1,781 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "Movie Rental",
+        "description": "Movie Rental APPLICATION API"
+    },
+    "host": "localhost:3040",
+    "basePath": "/",
+    "tags": [
+        {
+            "name": "Auth",
+            "description": "APIs that called by Auth."
+        },
+        {
+            "name": "Users",
+            "description": "APIs that called by Admin."
+        },
+        {
+            "name": "Movies",
+            "description": "APIs to manage Crops."
+        },
+        {
+            "name": "Rents",
+            "description": "APIs to manage Crops."
+        },
+        {
+            "name": "Rent History",
+            "description": "APIs to manage Crops."
+        }
+    ],
+    "schemes": [
+        "http"
+    ],
+    "consumes": [
+        "application/json"
+    ],
+    "produces": [
+        "application/json"
+    ],
+    "servers": [
+        {
+            "url": "http://localhost:3040/",
+            "description": "Local Server"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User and Admin Login",
+                "description": "Login will be common in our system.\n - After login an authentication token will be generated using JWT.\n - Token will be required for after login api's  like update, delete and other. \n - After pass Email ID",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that want to login.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "example":"ravina@gmail.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example":"password"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": "application/json"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/create-account":{
+            "post": {
+                "tags": [
+                    "Auth"
+                ],
+                "summary": "User Sign up",
+                "description": "After login verify the otp",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that want to login.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example":"Ravina Kumari"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example":"ravina@gmail.com"
+                                },
+                                "password":{
+                                    "type":"string",
+                                    "example":"password"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": "application/json"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/create-user": {
+            "post": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Create User",
+                "description": "Only Admin can create user",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "Bodyparameter for create user.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example": "user"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "example": "test@gmail.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "example": "password"
+                                },
+                                "role":{
+                                    "type":"string",
+                                    "example":"Admin/User"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/users-page": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Get All Users",
+                "description": "Get All Users Details",
+                "parameters": [
+                    {
+                        "name":"_limit",
+                        "in":"query",
+                        "type":"number",
+                        "properties":"_limit"
+                    },
+                    {
+                        "name":"_pageNum",
+                        "in":"query",
+                        "type":"number",
+                        "properties":"_pageNum"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/add-movie": {
+            "post": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Add Movie",
+                "description": "Add Movie",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that want to login.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example":"ABC"
+                                },
+                                "releasDate": {
+                                    "type": "date",
+                                    "example":"13/02/2022"
+                                },
+                                "genre": {
+                                    "type": "string",
+                                    "example":"Action"
+                                },
+                                "avalCD": {
+                                    "type": "number",
+                                    "example": 20
+                                },
+                                "coins": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "image": {
+                                    "type": "string",
+                                    "example": "kjds.png"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": "application/json"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/delete-movie/{name}": {
+            "delete": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Delete Movie By It's Name",
+                "description": "Delete Movie Passing By Movie name",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Specialties id that needs to be edited ",
+                        "required": true,
+                        "type": "string",
+                        "properties": "name"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/update-movie":{
+            "put": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Update Movie",
+                "description": "Update Movie",
+                "parameters": [
+                    {
+                        "name": "Movie",
+                        "in": "body",
+                        "description": "Movie going to update.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "old_name": {
+                                    "type": "string",
+                                    "example":"ABC"
+                                },
+                                "name": {
+                                    "type": "string",
+                                    "example":"abcd"
+                                },
+                                "releasDate": {
+                                    "type": "date",
+                                    "example": "12/03/2022"
+                                },
+                                "genre": {
+                                    "type": "string",
+                                    "example":"Action"
+                                },
+                                "avalCD": {
+                                    "type": "number",
+                                    "example": 20
+                                },
+                                "coins": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "image": {
+                                    "type": "string",
+                                    "example": "kjds.png"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/all-movies":{
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get all Movies",
+                "description": "Get all Movies",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/get-movie/{name}": {
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get Movie by movie name",
+                "description": "Get Movie by movie name",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "path",
+                        "description": "Movie Name to get it's details.",
+                        "required": true,
+                        "type": "string",
+                        "properties": "name"
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                ]
+            }
+        },
+        "/sort-movies": {
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Get all movies sorted by release date",
+                "description": "Get all Movies sorted by release date",
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                ]
+            }
+        },
+        "/search":{
+            "get": {
+                "tags": [
+                    "Movies"
+                ],
+                "summary": "Search Movie",
+                "description": "Search movie",
+                "parameters": [
+                    {
+                        "name":"sort",
+                        "in":"query",
+                        "type":"string",
+                        "properties":"sort"
+                    },
+                    {
+                        "name":"limit",
+                        "in":"query",
+                        "type":"number",
+                        "properties":"limit"
+                    },
+                    {
+                        "name":"page",
+                        "in":"query",
+                        "type":"number",
+                        "properties":"page"
+                    },
+                    {
+                        "name":"search",
+                        "in":"query",
+                        "type":"string",
+                        "properties":"search"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/view-profile": {
+            "get": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "View Profile",
+                "description": "Get User details",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "403": {
+                        "description": "jwt expired"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/edit-profie": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Edit Profile",
+                "description": "Edit Profile",
+                "parameters": [],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/add-to-wallet": {
+            "put": {
+                "tags": [
+                    "Users"
+                ],
+                "summary": "Add wallet amount",
+                "description": "update wallet amount",
+                "parameters": [
+                    {
+                        "name": "User",
+                        "in": "query",
+                        "description": "User going to update",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "amount": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "user": {
+                                    "type": "string",
+                                    "example": "test@gmail.com"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "404": {
+                        "description": "Request not found"
+                    },
+                    "400": {
+                        "description": "Validation error"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                },
+                "security": [
+                    {
+                      "api_key": []
+                    }
+                  ]
+            }
+        },
+        "/return-movie": {
+            "post": {
+                "tags": [
+                    "Rent History"
+                ],
+                "summary": "Return Movie",
+                "description": "Return Rented Movie",
+                "parameters": [
+                    {
+                        "name": "user",
+                        "in": "body",
+                        "description": "User that want to login.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "example":"ABC"
+                                },
+                                "releasDate": {
+                                    "type": "date",
+                                    "example":"13/02/2022"
+                                },
+                                "genre": {
+                                    "type": "string",
+                                    "example":"Action"
+                                },
+                                "avalCD": {
+                                    "type": "number",
+                                    "example": 20
+                                },
+                                "coins": {
+                                    "type": "number",
+                                    "example": 100
+                                },
+                                "image": {
+                                    "type": "string",
+                                    "example": "kjds.png"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "content": "application/json"
+                },
+                "produces": [
+                    "application/json"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "SUCCESS"
+                    },
+                    "401": {
+                        "description": "Authentication error"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        }
+    },
+    "securityDefinitions": {
+        "api_key": {
+          "type": "apiKey",
+          "name": "Authorization",
+          "in": "header",
+          "schema": {
+            "type": "string",
+            "properties": "Authorization"
+        }
+        }
+    }
+}
